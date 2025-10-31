@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">Calle Peninsulares</string>
+
+
+
+
+    <string-array name="reminder_options">
+        <item>None</item>
+        <item>5 minutes before</item>
+        <item>10 minutes before</item>
+        <item>15 minutes before</item>
+        <item>30 minutes before</item>
+    </string-array>
+</resources>
