@@ -17,46 +17,76 @@ public class AlarmReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         String subject = intent.getStringExtra("subject");
-        String building = intent.getStringExtra("building");
+        String room = intent.getStringExtra("room");
+        String startTime = intent.getStringExtra("startTime");
+        String meetLink = intent.getStringExtra("meetLink");
+        int scheduleId = intent.getIntExtra("scheduleId", -1);
 
+        // 🟣 Decide where to redirect when user taps the notification
+        Intent notificationIntent;
 
-        String message;
-        if (subject.contains("Starting in")) {
-            message = "Your " + subject.replace("(Starting", "Class").trim() + " will begin soon at " + building + "!";
-        } else if (subject.contains("Class time now!")) {
-            message = "It's time for your " + subject.replace(" Class time now!", " Class").trim() + " Subject at " + building + "!";
+        if (meetLink != null && !meetLink.trim().isEmpty()) {
+            notificationIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(meetLink));
         } else {
-            message = "Reminder for " + subject + " at " + building;
+
+            notificationIntent = new Intent(context, activity_schedule_list.class);
         }
 
+        notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
 
-        Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+        PendingIntent pendingIntent = PendingIntent.getActivity(
+                context,
+                0,
+                notificationIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
+        );
 
-
+        // 🔔 Notification setup
         String channelId = "reminder_channel";
-        NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        NotificationManager notificationManager =
+                (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel channel = new NotificationChannel(
-                    channelId, "Class Reminders", NotificationManager.IMPORTANCE_HIGH);channel.setDescription("Reminders for your class schedules");notificationManager.createNotificationChannel(channel);
+                    channelId,
+                    "Schedule Alarm Channel",
+                    NotificationManager.IMPORTANCE_HIGH
+            );
+            notificationManager.createNotificationChannel(channel);
         }
 
+        Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
 
-        Intent openAppIntent = new Intent(context, Home.class);
-        openAppIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, openAppIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+        // 🪄 Build the notification message depending on type
+        String notificationTitle = "Upcoming Class: " + subject;
+        String notificationText;
 
+        if (meetLink != null && !meetLink.trim().isEmpty()) {
+            notificationText = "Tap to join your online class on Google Meet.";
+        } else {
+            notificationText = "Room: " + room + " | Starts at: " + startTime;
+        }
 
+        // 📱 Build the actual notification
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, channelId)
                 .setSmallIcon(R.drawable.ic_launcher_foreground)
-                .setContentTitle("Class Reminder")
-                .setContentText(message)
+                .setContentTitle(notificationTitle)
+                .setContentText(notificationText)
                 .setAutoCancel(true)
-                .setSound(alarmSound)
-                .setVibrate(new long[]{0, 500, 500, 500, 1000})
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setSound(alarmSound)
                 .setContentIntent(pendingIntent);
 
-
         notificationManager.notify((int) System.currentTimeMillis(), builder.build());
+
+        if (scheduleId != -1) {
+            DatabaseHelper dbHelper = new DatabaseHelper(context);
+            boolean deleted = dbHelper.deleteSchedule(scheduleId);
+            if (deleted) {
+                // Optionally refresh list immediately
+                Intent refreshIntent = new Intent("com.example.callepeninsulares.REFRESH_SCHEDULES");
+                context.sendBroadcast(refreshIntent);
+            }
+        }
     }
 }

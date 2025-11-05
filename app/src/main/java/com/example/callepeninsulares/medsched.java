@@ -1,5 +1,9 @@
 package com.example.callepeninsulares;
 
+import com.google.android.material.datepicker.MaterialDatePicker;
+import com.google.android.material.timepicker.MaterialTimePicker;
+import com.google.android.material.timepicker.TimeFormat;
+
 import android.annotation.SuppressLint;
 import android.app.AlarmManager;
 import android.app.DatePickerDialog;
@@ -15,6 +19,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
@@ -22,6 +27,10 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
+
+import com.google.android.material.datepicker.MaterialDatePicker;
+import com.google.android.material.timepicker.MaterialTimePicker;
+import com.google.android.material.timepicker.TimeFormat;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -40,13 +49,32 @@ public class medsched extends DialogFragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.medinasched, null);
 
-
         EditText Subject = view.findViewById(R.id.Subject);
         EditText editDate = view.findViewById(R.id.editTextDate);
         EditText editStartTime = view.findViewById(R.id.editTextStartTime);
         EditText editEndTime = view.findViewById(R.id.editTextEndTime);
         Button btnAddSchedule = view.findViewById(R.id.btnAddSchedule);
         Spinner spinnerMinutes = view.findViewById(R.id.SpinnerMinuteBefore);
+        Spinner Room = view.findViewById(R.id.Room);
+        EditText editMeetLink = view.findViewById(R.id.editTextMeetLink);
+
+        Room.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String selectedRoom = parent.getItemAtPosition(position).toString();
+                if (selectedRoom.equals("Online Class")) {
+                    editMeetLink.setVisibility(View.VISIBLE);
+                } else {
+                    editMeetLink.setVisibility(View.GONE);
+                    editMeetLink.setText(""); // clear previous link
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                editMeetLink.setVisibility(View.GONE);
+            }
+        });
 
         spinnerMinutes.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -66,38 +94,42 @@ public class medsched extends DialogFragment {
                         break;
                 }
             }
+
             @Override
             public void onNothingSelected(AdapterView<?> parent) { }
         });
 
         editDate.setOnClickListener(v -> {
-            final Calendar calendar = Calendar.getInstance();
-            int year = calendar.get(Calendar.YEAR);
-            int month = calendar.get(Calendar.MONTH);
-            int day = calendar.get(Calendar.DAY_OF_MONTH);
+            MaterialDatePicker<Long> datePicker = MaterialDatePicker.Builder.datePicker()
+                    .setTitleText("Select Class Date")
+                    .setSelection(MaterialDatePicker.todayInUtcMilliseconds())
+                    .build();
 
-            DatePickerDialog datePickerDialog = new DatePickerDialog(
-                    getContext(),
-                    (view1, year1, monthOfYear, dayOfMonth) -> {
-                        // monthOfYear starts at 0, so add 1
-                        String selectedDate = dayOfMonth + "/" + (monthOfYear + 1) + "/" + year1;
-                        editDate.setText(selectedDate);
-                    },
-                    year, month, day
-            );
-            datePickerDialog.show();
+            datePicker.addOnPositiveButtonClickListener(selection -> {
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTimeInMillis(selection);
+                @SuppressLint("SimpleDateFormat")
+                SimpleDateFormat sdf = new SimpleDateFormat("d/M/yyyy");
+                editDate.setText(sdf.format(calendar.getTime()));
+            });
+
+            datePicker.show(getParentFragmentManager(), "DATE_PICKER");
         });
 
         editStartTime.setOnClickListener(v -> showTimePicker(editStartTime));
 
         editEndTime.setOnClickListener(v -> showTimePicker(editEndTime));
 
+
+
         btnAddSchedule.setOnClickListener(v -> {
             String dateStr = editDate.getText().toString();
-            String timeStr = editStartTime.getText().toString();
+            String startTimeStr = editStartTime.getText().toString();
+            String endTimeStr = editEndTime.getText().toString();
             String subject = Subject.getText().toString();
+            String room = Room.getSelectedItem().toString();
 
-            if (dateStr.isEmpty() || timeStr.isEmpty()) {
+            if (dateStr.isEmpty() || startTimeStr.isEmpty()) {
                 Toast.makeText(getContext(), "Please select date and time!", Toast.LENGTH_SHORT).show();
 
                 return;
@@ -105,12 +137,36 @@ public class medsched extends DialogFragment {
 
             Calendar calendar = Calendar.getInstance();
             try {
+                @SuppressLint("SimpleDateFormat")
                 SimpleDateFormat sdf = new SimpleDateFormat("d/M/yyyy hh:mm a", Locale.getDefault());
-                Date date = sdf.parse(dateStr + " " + timeStr);
-                calendar.setTime(date);
+                Date date = sdf.parse(dateStr + " " + startTimeStr);
+                if (date != null) calendar.setTime(date);
             } catch (ParseException e) {
                 Toast.makeText(getContext(), "Invalid date/time format!", Toast.LENGTH_SHORT).show();
                 return;
+            }
+
+            boolean isOnlineClass = room.equals("Online Class");
+            String meetLink = editMeetLink.getText().toString();
+
+            DatabaseHelper dbHelper = new DatabaseHelper(getContext());
+            long scheduleId = dbHelper.insertSchedule(
+                    subject,
+                    "Medina Lacson Building",
+                    dateStr,
+                    startTimeStr,
+                    endTimeStr,
+                    room,
+                    selectedMinutesBefore,
+                    isOnlineClass,
+                    meetLink
+            );
+
+            if (scheduleId == -1) {
+                Toast.makeText(getContext(), "Failed to save schedule!", Toast.LENGTH_SHORT).show();
+                return;
+            } else {
+                Toast.makeText(getContext(), "Successfully saved!", Toast.LENGTH_SHORT).show();
             }
 
             AlarmManager alarmManager = (AlarmManager) getContext().getSystemService(Context.ALARM_SERVICE);
@@ -122,15 +178,18 @@ public class medsched extends DialogFragment {
                     earlyReminder.add(Calendar.MINUTE, -selectedMinutesBefore);
 
                     Intent earlyIntent = new Intent(getContext(), AlarmReceiver.class);
-                    earlyIntent.putExtra("subject", subject + " (Starting in " + selectedMinutesBefore + " min");
-                    earlyIntent.putExtra("building", "Medina Lacson Building");
+                    earlyIntent.putExtra("subject", subject);
+                    earlyIntent.putExtra("room", room);
+                    earlyIntent.putExtra("startTime", startTimeStr);
+                    earlyIntent.putExtra("meetLink", meetLink);
+                    earlyIntent.putExtra("isOnlineClass", isOnlineClass);
 
                     PendingIntent earlyPendingIntent = PendingIntent.getBroadcast(getContext(), (int) System.currentTimeMillis(), earlyIntent, PendingIntent.FLAG_IMMUTABLE);
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                         if (alarmManager.canScheduleExactAlarms()) {
                             alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, earlyReminder.getTimeInMillis(), earlyPendingIntent);
                         } else {
-                            Toast.makeText(getContext(), "Please allow exact alarms in Settings!", Toast.LENGTH_LONG).show();
+                            Toast.makeText(getContext(), "Please allow 'exact alarms' in Settings!", Toast.LENGTH_LONG).show();
                             return;
                         }
                     } else {
@@ -140,27 +199,48 @@ public class medsched extends DialogFragment {
 
                 //  CLASS TIME REMINDER
                 Intent exactIntent = new Intent(getContext(), AlarmReceiver.class);
-                exactIntent.putExtra("subject", subject + " Class time now!");
-                exactIntent.putExtra("building", "Medina Lacson Building");
+                exactIntent.putExtra("subject", subject);
+                exactIntent.putExtra("room", room);
+                exactIntent.putExtra("startTime", startTimeStr);
+                exactIntent.putExtra("meetLink", meetLink);
+                exactIntent.putExtra("isOnlineClass", isOnlineClass);
+                exactIntent.putExtra("scheduleId", (int) scheduleId);
 
                 PendingIntent exactPendingIntent = PendingIntent.getBroadcast(
                         getContext(),
-                        (int) (System.currentTimeMillis() + 1), exactIntent, PendingIntent.FLAG_IMMUTABLE);
+                        (int) scheduleId,
+                        exactIntent,
+                        PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
+                );
 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                     if (alarmManager.canScheduleExactAlarms()) {
-                        alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), exactPendingIntent);
+                        alarmManager.setExactAndAllowWhileIdle(
+                                AlarmManager.RTC_WAKEUP,
+                                calendar.getTimeInMillis(),
+                                exactPendingIntent
+                        );
+                    } else {
+                        // ⚠️ Fallback if exact alarms not allowed
+                        alarmManager.set(
+                                AlarmManager.RTC_WAKEUP,
+                                calendar.getTimeInMillis(),
+                                exactPendingIntent
+                        );
+
+                        Toast.makeText(
+                                getContext(),
+                                "Exact alarms permission not granted — using inexact alarm instead.",
+                                Toast.LENGTH_SHORT
+                        ).show();
                     }
                 } else {
-                    alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), exactPendingIntent);
+                    alarmManager.setExact(
+                            AlarmManager.RTC_WAKEUP,
+                            calendar.getTimeInMillis(),
+                            exactPendingIntent
+                    );
                 }
-
-                if (selectedMinutesBefore > 0) {
-                    Toast.makeText(getContext(), "Reminders set: " + selectedMinutesBefore + " min early", Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(getContext(), "Reminder set for class time only!", Toast.LENGTH_SHORT).show();
-                }
-
                 dismiss();
 
             } catch (SecurityException e) {
@@ -174,21 +254,23 @@ public class medsched extends DialogFragment {
 
 
     private void showTimePicker(EditText targetField) {
-        final Calendar calendar = Calendar.getInstance();
-        int hour = calendar.get(Calendar.HOUR_OF_DAY);
-        int minute = calendar.get(Calendar.MINUTE);
+        MaterialTimePicker timePicker = new MaterialTimePicker.Builder()
+                .setTimeFormat(TimeFormat.CLOCK_12H)
+                .setHour(8)
+                .setMinute(0)
+                .setTitleText("Select Time")
+                .build();
 
-        TimePickerDialog timePickerDialog = new TimePickerDialog(
-                getContext(),
-                (view, hourOfDay, minute1) -> {
-                    String amPm = (hourOfDay >= 12) ? "PM" : "AM";
-                    int displayHour = (hourOfDay % 12 == 0) ? 12 : hourOfDay % 12;
-                    String formattedTime = String.format(Locale.getDefault(), "%02d:%02d %s", displayHour, minute1, amPm);
-                    targetField.setText(formattedTime);
-                },
-                hour, minute, false
-        );
-        timePickerDialog.show();
+        timePicker.addOnPositiveButtonClickListener(v -> {
+            int hour = timePicker.getHour();
+            int minute = timePicker.getMinute();
+            String amPm = (hour >= 12) ? "PM" : "AM";
+            int displayHour = (hour % 12 == 0) ? 12 : hour % 12;
+            String formattedTime = String.format(Locale.getDefault(), "%02d:%02d %s", displayHour, minute, amPm);
+            targetField.setText(formattedTime);
+        });
+
+        timePicker.show(getParentFragmentManager(), "TIME_PICKER");
     }
 
 

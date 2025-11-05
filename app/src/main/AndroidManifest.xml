@@ -6,8 +6,6 @@
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
 
-
-
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -17,7 +15,12 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.CallePeninsulares">
-
+        <activity
+            android:name=".EditScheduleActivity"
+            android:exported="true" />
+        <activity
+            android:name=".activity_schedule_list"
+            android:exported="true" />
 
         <receiver
             android:name=".AlarmReceiver"

@@ -1,8 +1,20 @@
 <resources>
     <string name="app_name">Calle Peninsulares</string>
 
+    <string-array name="roomed_options">
+        <item>Online Class</item>
+        <item>202</item>
+        <item>203</item>
+        <item>204</item>
+        <item>205</item>
+    </string-array>
 
-
+    <string-array name="minutes_before_options">
+        <item>None</item>
+        <item>5 minutes before</item>
+        <item>10 minutes before</item>
+        <item>15 minutes before</item>
+    </string-array>
 
     <string-array name="reminder_options">
         <item>None</item>
