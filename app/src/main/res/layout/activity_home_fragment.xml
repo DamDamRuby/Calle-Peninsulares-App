@@ -1,0 +1,125 @@
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/gradient_background"
+    tools:context=".HomeFragment">
+
+    <ImageView
+        android:id="@+id/sideImage"
+        android:layout_width="394dp"
+        android:layout_height="761dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/map"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.584"
+        tools:layout_editor_absoluteX="8dp" />
+
+    <ImageView
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:background="@color/white"
+        android:src="@drawable/ic_wheelchair"
+        app:layout_constraintBottom_toBottomOf="@+id/sideImage"
+        app:layout_constraintEnd_toEndOf="@+id/sideImage"
+        app:layout_constraintHorizontal_bias="0.757"
+        app:layout_constraintStart_toStartOf="@+id/sideImage"
+        app:layout_constraintTop_toTopOf="@+id/sideImage"
+        app:layout_constraintVertical_bias="0.567" />
+
+    <Button
+        android:id="@+id/chapelBtn"
+        android:layout_width="98dp"
+        android:layout_height="60dp"
+        android:background="@android:color/transparent"
+        android:elevation="6dp"
+        android:padding="8dp"
+        android:src="@drawable/rounded_button"
+        android:text="Chapel"
+        android:textColor="@android:color/black"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toBottomOf="@+id/sideImage"
+        app:layout_constraintEnd_toEndOf="@+id/sideImage"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/sideImage"
+        app:layout_constraintTop_toTopOf="@+id/sideImage"
+        app:layout_constraintVertical_bias="0.403" />
+
+    <Button
+        android:id="@+id/autoBtn"
+        android:layout_width="100dp"
+        android:layout_height="244dp"
+        android:background="@android:color/transparent"
+        android:elevation="6dp"
+        android:padding="8dp"
+        android:src="@drawable/rounded_button"
+        android:text="Automotive \nTechnology"
+        android:textColor="@android:color/black"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toBottomOf="@+id/sideImage"
+        app:layout_constraintEnd_toEndOf="@+id/sideImage"
+        app:layout_constraintHorizontal_bias="0.037"
+        app:layout_constraintStart_toStartOf="@+id/sideImage"
+        app:layout_constraintTop_toTopOf="@+id/sideImage"
+        app:layout_constraintVertical_bias="0.69" />
+
+    <Button
+        android:id="@+id/medinagroundsBtn"
+        android:layout_width="143dp"
+        android:layout_height="198dp"
+        android:background="@android:color/transparent"
+        android:elevation="6dp"
+        android:padding="8dp"
+        android:src="@drawable/rounded_button"
+        android:text="Medina Lacson Grounds"
+        android:textColor="@android:color/black"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toBottomOf="@+id/sideImage"
+        app:layout_constraintEnd_toEndOf="@+id/sideImage"
+        app:layout_constraintHorizontal_bias="0.621"
+        app:layout_constraintStart_toStartOf="@+id/sideImage"
+        app:layout_constraintTop_toTopOf="@+id/sideImage"
+        app:layout_constraintVertical_bias="0.797" />
+
+    <Button
+        android:id="@+id/medinaBtn"
+        android:layout_width="81dp"
+        android:layout_height="312dp"
+        android:background="@android:color/transparent"
+        android:elevation="6dp"
+        android:padding="8dp"
+        android:src="@drawable/rounded_button"
+        android:text="Medina Lacson Building"
+        android:textColor="@android:color/black"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toBottomOf="@+id/sideImage"
+        app:layout_constraintEnd_toEndOf="@+id/sideImage"
+        app:layout_constraintHorizontal_bias="0.984"
+        app:layout_constraintStart_toStartOf="@+id/sideImage"
+        app:layout_constraintTop_toTopOf="@+id/sideImage"
+        app:layout_constraintVertical_bias="0.83" />
+
+    <Button
+        android:id="@+id/bacommBtn"
+        android:layout_width="92dp"
+        android:layout_height="163dp"
+        android:background="@android:color/transparent"
+        android:elevation="6dp"
+        android:padding="8dp"
+        android:src="@drawable/rounded_button"
+        android:text="Bacomm Building"
+        android:textColor="@android:color/black"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toBottomOf="@+id/sideImage"
+        app:layout_constraintEnd_toEndOf="@+id/sideImage"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/sideImage"
+        app:layout_constraintTop_toTopOf="@+id/sideImage"
+        app:layout_constraintVertical_bias="0.157" />
+
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

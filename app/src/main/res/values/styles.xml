@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="primary_light">#FF6200EE</color>
+    <color name="primary_variant_light">#D500F9</color>
+    <color name="background_light">#FFFFFF</color>
+
+    <color name="primary_dark">#BB86FC</color>
+    <color name="primary_variant_dark">#3700B3</color>
+    <color name="background_dark">#121212</color>
+
+    <color name="secondary_light">#03DAC6</color>
+    <color name="secondary_dark">#03DAC6</color>
+
+    <color name="switch_thumb">#673AB7</color>
+    <color name="switch_track">#80673AB7</color> <!-- 50% alpha -->
+    <color name="slider_track_inactive">#33000000</color> <!-- light gray with alpha -->
+    <color name="primary">#673AB7</color>
+
+    <style name="RoomButton">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">70dp</item>
+        <item name="android:layout_margin">4dp</item>
+        <item name="android:backgroundTint">@color/purple</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:layout_columnWeight">1</item>
+        <item name="android:layout_rowWeight">1</item>
+    </style>
+
+    <style name="StairsButton">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">70dp</item>
+        <item name="android:layout_margin">4dp</item>
+        <item name="android:backgroundTint">@color/gray</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:layout_columnWeight">1</item>
+        <item name="android:layout_rowWeight">1</item>
+    </style>
+
+    <style name="TransparentDialog" parent="Theme.MaterialComponents.Dialog">
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:backgroundDimEnabled">true</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowMinWidthMajor">0%</item>
+        <item name="android:windowMinWidthMinor">0%</item>
+    </style>
+
+    <style name="Theme.App.Dark" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/primary_dark</item>
+        <item name="colorPrimaryVariant">@color/primary_variant_dark</item>
+        <item name="colorOnPrimary">@android:color/white</item>
+        <item name="colorSecondary">@color/secondary_dark</item>
+        <item name="colorOnSecondary">@android:color/white</item>
+        <item name="android:windowBackground">@color/background_dark</item>
+        <!-- More color attributes here -->
+    </style>
+
+    <style name="Theme.App.Light" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/primary_light</item>
+        <item name="colorPrimaryVariant">@color/primary_variant_light</item>
+        <item name="colorOnPrimary">@android:color/white</item>
+        <item name="colorSecondary">@color/secondary_light</item>
+        <item name="colorOnSecondary">@android:color/black</item>
+        <item name="android:windowBackground">@color/background_light</item>
+        <!-- More color attributes here -->
+    </style>
+</resources>

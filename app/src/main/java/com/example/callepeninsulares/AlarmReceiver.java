@@ -22,14 +22,14 @@ public class AlarmReceiver extends BroadcastReceiver {
         String meetLink = intent.getStringExtra("meetLink");
         int scheduleId = intent.getIntExtra("scheduleId", -1);
 
-        // 🟣 Decide where to redirect when user taps the notification
+
         Intent notificationIntent;
 
         if (meetLink != null && !meetLink.trim().isEmpty()) {
             notificationIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(meetLink));
         } else {
 
-            notificationIntent = new Intent(context, activity_schedule_list.class);
+            notificationIntent = new Intent(context, ScheduleFragment.class);
         }
 
         notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -41,7 +41,7 @@ public class AlarmReceiver extends BroadcastReceiver {
                 PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
         );
 
-        // 🔔 Notification setup
+
         String channelId = "reminder_channel";
         NotificationManager notificationManager =
                 (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
@@ -57,7 +57,7 @@ public class AlarmReceiver extends BroadcastReceiver {
 
         Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
 
-        // 🪄 Build the notification message depending on type
+
         String notificationTitle = "Upcoming Class: " + subject;
         String notificationText;
 
@@ -67,7 +67,7 @@ public class AlarmReceiver extends BroadcastReceiver {
             notificationText = "Room: " + room + " | Starts at: " + startTime;
         }
 
-        // 📱 Build the actual notification
+
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, channelId)
                 .setSmallIcon(R.drawable.ic_launcher_foreground)
                 .setContentTitle(notificationTitle)

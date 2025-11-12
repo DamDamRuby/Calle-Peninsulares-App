@@ -20,7 +20,7 @@ public class Schedule {
         this.meetLink = meetLink;
     }
 
-    // getters
+
     public int getId() { return id; }
     public String getBuilding() { return building; }
     public String getSubject() { return subject; }

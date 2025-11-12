@@ -1,12 +1,42 @@
 <resources>
     <string name="app_name">Calle Peninsulares</string>
 
+    <string name="signup_redirect"><u>Create Account</u></string>
+
+    <string name="login_redirect"><u>Already have an account? Login</u></string>
+
+
     <string-array name="roomed_options">
         <item>Online Class</item>
+        <item>201</item>
         <item>202</item>
-        <item>203</item>
-        <item>204</item>
-        <item>205</item>
+        <item>Smart Lab</item>
+
+    </string-array>
+
+    <string-array name="auto_options">
+        <item>Online Class</item>
+        <item>Onsite Class</item>
+    </string-array>
+
+    <string-array name="bacomm_options">
+        <item>Online Class</item>
+        <item>LRC</item>
+        <item>201</item>
+        <item>202</item>
+        <item>COAS Ampitheatre</item>
+        <item>Dance/Broadcast Room</item>
+        <item>Radio Studio Room</item>
+        <item>301</item>
+        <item>301</item>
+        <item>302</item>
+        <item>401</item>
+        <item>402</item>
+        <item>403</item>
+        <item>404</item>
+        <item>405</item>
+        <item>Hangeul Classroom 1</item>
+        <item>Hangeul Classroom 2</item>
     </string-array>
 
     <string-array name="minutes_before_options">
@@ -21,6 +51,5 @@
         <item>5 minutes before</item>
         <item>10 minutes before</item>
         <item>15 minutes before</item>
-        <item>30 minutes before</item>
     </string-array>
 </resources>

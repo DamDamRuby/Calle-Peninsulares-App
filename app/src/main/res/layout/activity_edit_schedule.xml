@@ -1,86 +1,223 @@
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
-    <LinearLayout
-        android:orientation="vertical"
-        android:padding="16dp"
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@android:color/transparent"
+    android:padding="0dp">
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/scheduleCard"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:backgroundTint="@android:color/white"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="10dp"
+        android:layout_marginTop="20dp">
 
-        <EditText android:id="@+id/editBuilding"
-            android:hint="Building"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+        <LinearLayout
+            android:layout_width="329dp"
+            android:layout_height="match_parent"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:padding="24dp">
 
-        <EditText android:id="@+id/editSubject"
-            android:hint="Subject"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            <!-- Title -->
+            <TextView
+                android:id="@+id/scheduleTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="24dp"
+                android:text="Edit Schedule"
+                android:textColor="@color/black"
+                android:textSize="28sp"
+                android:textStyle="bold" />
 
-        <Spinner
-            android:id="@+id/Room"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:entries="@array/roomed_options"
-            android:layout_marginTop="8dp" />
-        <!-- Google Meet Link input -->
-        <EditText
-            android:id="@+id/editTextMeetLink"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Enter Google Meet link"
-            android:visibility="gone"
-            android:inputType="textUri"
-            android:autofillHints="username"
-            android:padding="8dp" />
+            <!-- Building Input -->
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:hint="Building">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/editBuilding"
+                    android:layout_width="match_parent"
+                    android:layout_height="61dp"
+                    android:backgroundTint="@color/white"
+                    android:drawableStart="@drawable/ic_building"
+                    android:drawablePadding="12dp"
+                    android:inputType="text"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Subject Input -->
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:hint="Subject">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/editSubject"
+                    android:layout_width="match_parent"
+                    android:layout_height="51dp"
+                    android:backgroundTint="@color/white"
+                    android:drawableStart="@drawable/ic_subject"
+                    android:drawablePadding="12dp"
+                    android:inputType="text"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Room Spinner -->
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:hint="Room">
+
+                <Spinner
+                    android:id="@+id/Room"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:importantForAccessibility="yes"
+                    android:popupBackground="@android:color/white"
+                    android:spinnerMode="dropdown" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Date Input -->
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:hint="Date">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/editDate"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    android:drawableStart="@drawable/ic_calendar"
+                    android:drawablePadding="12dp"
+                    android:focusable="false"
+                    android:focusableInTouchMode="false" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Time Start Input -->
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:hint="Time Start">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/editStartTime"
+                    android:layout_width="match_parent"
+                    android:layout_height="52dp"
+                    android:clickable="true"
+                    android:drawableStart="@drawable/ic_clock"
+                    android:drawablePadding="12dp"
+                    android:focusable="false"
+                    android:focusableInTouchMode="false" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Time End Input -->
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:hint="Time End">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/editEndTime"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:clickable="true"
+                    android:drawableStart="@drawable/ic_clock"
+                    android:drawablePadding="12dp"
+                    android:focusable="false"
+                    android:focusableInTouchMode="false" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Minutes Before Spinner -->
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:hint="Minutes Before">
+
+                <Spinner
+                    android:id="@+id/spinnerMinutesBefore"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:importantForAccessibility="yes"
+                    android:popupBackground="@android:color/white"
+                    android:spinnerMode="dropdown" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Meet Link Input -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/meetLinkLayout"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:hint="Google Meet Link"
+                android:visibility="visible">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/editTextMeetLink"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawableStart="@drawable/ic_meet"
+                    android:drawablePadding="12dp"
+                    android:inputType="textUri" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Horizontal layout for the Update and Delete buttons -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="0dp"
+                android:gravity="center_horizontal">
+
+                <!-- Update Button -->
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnUpdate"
+                    android:layout_width="8dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginEnd="8dp"
+                    android:layout_weight="1"
+                    android:backgroundTint="#3F51B5"
+                    android:text="Update Schedule"
+                    android:textColor="#FFFFFF"
+                    android:textSize="16sp" />
+
+                <!-- Delete Button -->
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnDelete"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:backgroundTint="#F44336"
+                    android:text="Delete Schedule"
+                    android:textColor="#FFFFFF"
+                    android:textSize="16sp" />
+            </LinearLayout>
+
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
 
 
-        <EditText android:id="@+id/editDate"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:clickable="true"
-            android:focusable="false"
-            android:focusableInTouchMode="false"
-            android:hint="Date"
-            android:layout_marginTop="8dp" />
-
-        <EditText android:id="@+id/editStartTime"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:clickable="true"
-            android:focusable="false"
-            android:focusableInTouchMode="false"
-            android:hint="Time Start"
-            android:layout_marginTop="8dp" />
-
-        <EditText android:id="@+id/editEndTime"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:clickable="true"
-            android:focusable="false"
-            android:focusableInTouchMode="false"
-            android:hint="Time End"
-            android:layout_marginTop="8dp"/>
-
-        <Spinner
-            android:id="@+id/spinnerMinutesBefore"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:entries="@array/minutes_before_options"
-            android:layout_marginTop="8dp"/>
-
-
-
-
-        <Button android:id="@+id/btnUpdate"
-            android:text="Update Schedule"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
-
-        <Button android:id="@+id/btnDelete"
-            android:text="Delete Schedule"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
-
-    </LinearLayout>
-</ScrollView>
+</FrameLayout>

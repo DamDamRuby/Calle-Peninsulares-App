@@ -49,11 +49,11 @@ public class ScheduleAdapter extends BaseAdapter {
         TextView room = convertView.findViewById(R.id.textRoom);
         TextView reminder = convertView.findViewById(R.id.textReminder);
 
-        // 🟣 Subject
+
         subject.setText(schedule.getSubject());
 
 
-        // 🟣 Show “Online Class” instead of building name if applicable
+
         if (schedule.isOnlineClass()) {
             building.setText("Online Class");
             room.setVisibility(View.GONE);
@@ -62,12 +62,12 @@ public class ScheduleAdapter extends BaseAdapter {
             room.setText("Room: " + schedule.getRoom());
         }
 
-        // 🟣 Other info
+
         date.setText(schedule.getDate());
         time.setText(schedule.getStartTime() + " - " + schedule.getEndTime());
 
 
-        // 🟣 Reminder visibility
+
         if (schedule.getMinutesBefore() > 0) {
             reminder.setVisibility(View.VISIBLE);
             reminder.setText("Reminder: " + schedule.getMinutesBefore() + " min early");

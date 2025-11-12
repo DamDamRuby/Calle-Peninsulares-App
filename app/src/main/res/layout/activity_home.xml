@@ -5,47 +5,66 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/background"
     tools:context=".Home">
 
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar"
-        android:layout_width="414dp"
-        android:layout_height="92dp"
-        android:background="#80000000"
-        android:titleTextColor="@android:color/white"
-        app:layout_constraintBottom_toBottomOf="parent"
+
+    <!-- Where Fragments Will Load -->
+
+    <!-- Fixed Bottom Navigation -->
+
+    <FrameLayout
+        android:id="@+id/fragment_container"
+        android:layout_width="393dp"
+        android:layout_height="705dp"
+        app:layout_constraintBottom_toTopOf="@id/bottom_navigation"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.001"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-        app:title=""
-        tools:layout_editor_absoluteX="-2dp" />
+        app:layout_constraintVertical_bias="1.0">
+
+    </FrameLayout>
+
+    <View
+        android:id="@+id/view2"
+        android:layout_width="match_parent"
+        android:layout_height="101dp"
+        android:layout_alignParentTop="true"
+        android:layout_marginBottom="762dp"
+        android:background="#AD1F1F"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottom_navigation"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bottom_nav_bg"
+        app:itemIconTint="@color/bottom_nav_colors"
+        app:itemTextColor="@color/bottom_nav_colors"
+        app:labelVisibilityMode="labeled"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:menu="@menu/bottom_nav_menu" />
 
     <ImageView
-        android:id="@+id/menu_button"
-        android:layout_width="41dp"
-        android:layout_height="39dp"
-        android:background="@android:color/transparent"
-        android:contentDescription="Menu"
-        android:src="@drawable/ic_more_vert"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:id="@+id/sideImage"
+        android:layout_width="120dp"
+        android:layout_height="102dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/logo"
+        app:layout_constraintBottom_toBottomOf="@+id/view2"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.043"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.043" />
-
-    <Button
-        android:id="@+id/medinaBtn"
-        android:layout_width="96dp"
-        android:layout_height="284dp"
-        android:layout_marginStart="316dp"
-        android:background="@drawable/button_selector"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.862"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.348" />
+        app:layout_constraintHorizontal_bias="0.054"
+        app:layout_constraintStart_toStartOf="@+id/view2"
+        app:layout_constraintTop_toTopOf="@+id/view2"
+        app:layout_constraintVertical_bias="0.0" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
+
