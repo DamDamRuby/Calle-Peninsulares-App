@@ -14,7 +14,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String databaseName = "Signup.db";
 
     public DatabaseHelper(@Nullable Context context) {
-        super(context, databaseName, null, 5);
+        super(context, databaseName, null, 6);
     }
 
     @Override
@@ -124,15 +124,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         cv.put("isOnlineClass", isOnlineClass ? 1 : 0);
         cv.put("meetLink", meetLink);
 
-        android.util.Log.d("DB_UPDATE", "Attempting to update ID: " + id);
-        android.util.Log.d("DB_UPDATE", "Values: " + cv.toString());
-        Log.d("DatabaseHelper", "Updating schedule with ID: " + id);
-        Log.d("DatabaseHelper", "Updating with data: " + cv.toString());
+        Log.d("DB_UPDATE", "Updating schedule with values: " + cv.toString());
 
         int result = db.update("schedules", cv, "id=?", new String[]{String.valueOf(id)});
+        Log.d("DB_UPDATE", "Rows affected: " + result);
 
-        Log.d("DatabaseHelper", "Update result: " + result);
         return result > 0;
+
     }
     public Cursor getScheduleById(int id) {
         SQLiteDatabase db = this.getReadableDatabase();

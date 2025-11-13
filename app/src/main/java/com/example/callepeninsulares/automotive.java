@@ -56,8 +56,8 @@ public class automotive extends AppCompatActivity {
         if (btnOpen != null) {
             btnOpen.setOnClickListener(v -> {
                 Log.d("activity_medina", "Add Schedule button clicked");
-               automotivesched fragmentDialog = new automotivesched();
-                fragmentDialog.show(getSupportFragmentManager(), "CustomDialog");
+                automotivesched dialogFragment = new automotivesched();
+                dialogFragment.show(getSupportFragmentManager(), "automotiveSchedDialog");
             });
         } else {
             Log.e("activity_medina", "btnOpen button not found");

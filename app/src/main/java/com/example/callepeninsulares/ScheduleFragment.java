@@ -1,5 +1,6 @@
 package com.example.callepeninsulares;
 
+
 import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -32,6 +33,8 @@ import java.util.Locale;
 
 public class ScheduleFragment extends Fragment {
 
+
+
     private BroadcastReceiver refreshReceiver;
     private DatabaseHelper dbHelper;
     private ArrayList<Schedule> schedules;
@@ -50,6 +53,9 @@ public class ScheduleFragment extends Fragment {
         listView = view.findViewById(R.id.scheduleListView);
         schedules = new ArrayList<>();
         listItems = new ArrayList<>();
+
+
+
 
 
         SharedPreferences settingsPrefs = requireContext().getSharedPreferences("SettingsPrefs", Context.MODE_PRIVATE);
@@ -128,7 +134,7 @@ public class ScheduleFragment extends Fragment {
 
 
 
-    private void loadSchedulesFromDatabase() {
+    public void loadSchedulesFromDatabase() {
         Log.d("ScheduleFragment", "loadSchedulesFromDatabase: Loading schedules from database");
         schedules.clear();
 

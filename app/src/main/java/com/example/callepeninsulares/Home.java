@@ -15,10 +15,18 @@ public class Home extends AppCompatActivity {
 
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
 
+
+
+
         // ✅ Load HomeFragment by default
         getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.fragment_container, new HomeFragment())
+                .commit();
+
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.fragment_container, new ScheduleFragment(), "schedule_fragment")
                 .commit();
 
         bottomNavigationView.setOnItemSelectedListener(item -> {

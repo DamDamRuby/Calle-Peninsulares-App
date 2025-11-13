@@ -10,6 +10,9 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
 
+
+
+
 import androidx.core.app.NotificationCompat;
 
 public class AlarmReceiver extends BroadcastReceiver {
@@ -57,6 +60,7 @@ public class AlarmReceiver extends BroadcastReceiver {
 
         Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
 
+        long[] vibrationPattern = {0, 1000, 500, 1000};
 
         String notificationTitle = "Upcoming Class: " + subject;
         String notificationText;
@@ -75,7 +79,11 @@ public class AlarmReceiver extends BroadcastReceiver {
                 .setAutoCancel(true)
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setSound(alarmSound)
+                .setVibrate(vibrationPattern)
+                .setFullScreenIntent(pendingIntent, true)
                 .setContentIntent(pendingIntent);
+                 builder.setDefaults(NotificationCompat.DEFAULT_ALL);
+
 
         notificationManager.notify((int) System.currentTimeMillis(), builder.build());
 

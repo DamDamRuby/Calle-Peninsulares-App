@@ -77,7 +77,6 @@ public class EditScheduleActivity extends DialogFragment {
         minuteBeforeSpinner.setAdapter(minuteAdapter);
 
 
-
         SharedPreferences settingsPrefs = requireContext().getSharedPreferences("SettingsPrefs", Context.MODE_PRIVATE);
         boolean highContrast = settingsPrefs.getBoolean("highContrast", false);
         float textSize = settingsPrefs.getFloat("textSize", 16f);
@@ -156,10 +155,29 @@ public class EditScheduleActivity extends DialogFragment {
         Cursor cursor = dbHelper.getScheduleById(scheduleId);
         if (cursor != null && cursor.moveToFirst()) {
             building.setText(cursor.getString(2));   // building
+
             subject.setText(cursor.getString(3));    // subject
             date.setText(cursor.getString(4));       // date
             startTime.setText(cursor.getString(5));  // startTime
             endTime.setText(cursor.getString(6));    // endTime
+
+            String buildingValue = cursor.getString(2);   // Building
+
+            // Dynamically update roomSpinner based on building
+
+            if (building.getText().toString().equals("BA Comm Building")) {
+                roomOptions = getResources().getStringArray(R.array.bacomm_options);
+            } else if (building.getText().toString().equals("Medina Lacson Building")) {
+                roomOptions = getResources().getStringArray(R.array.roomed_options);
+            } else if (building.getText().toString().equals("Automotive Technology")) {
+                roomOptions = getResources().getStringArray(R.array.auto_options);
+            } else {
+                roomOptions = new String[]{"No room options available"};
+            }
+
+            // Update the existing adapter instead of redeclaring
+            roomAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_dropdown_item, roomOptions);
+            roomSpinner.setAdapter(roomAdapter);
 
             String roomValue = cursor.getString(7);
             for (int i = 0; i < roomSpinner.getCount(); i++) {
@@ -175,6 +193,7 @@ public class EditScheduleActivity extends DialogFragment {
 
             editMeetLink.setText(meetLink);
             editMeetLink.setVisibility(isOnlineClass ? View.VISIBLE : View.GONE);
+
 
             int spinnerPos;
             switch (selectedMinutesBefore) {
@@ -194,8 +213,12 @@ public class EditScheduleActivity extends DialogFragment {
             minuteBeforeSpinner.setSelection(spinnerPos);
         }
 
-        if (cursor != null) cursor.close();
-
+        if (cursor != null)
+            cursor.close();
+        else {
+            // Log if no schedule with the given ID was found
+            Log.d("DB_UPDATE", "Schedule with ID: " + scheduleId + " not found.");
+        }
 
         minuteBeforeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -258,13 +281,33 @@ public class EditScheduleActivity extends DialogFragment {
             );
 
             if (updated) {
-                Toast.makeText(getContext(), "Updated successfully!", Toast.LENGTH_SHORT).show();
-                // Send broadcast to refresh the schedule list
-                Log.d("EditScheduleActivity", "Sending refresh broadcast");
-                requireContext().sendBroadcast(new Intent("com.example.callepeninsulares.REFRESH_SCHEDULES"));
-                dismiss(); // Close the dialog
+                cancelExistingAlarm(scheduleId);
+
+                scheduleAlarm(
+                        scheduleId,
+                        subject.getText().toString(),
+                        roomSpinner.getSelectedItem().toString(),
+                        date.getText().toString(),
+                        startTime.getText().toString(),
+                        selectedMinutesBefore,
+                        editMeetLink.getText().toString()
+                );
+
+                Toast.makeText(getContext(), "Updated and alarm rescheduled!", Toast.LENGTH_SHORT).show();
+                ScheduleFragment scheduleFragment = (ScheduleFragment) getParentFragmentManager()
+                        .findFragmentByTag("schedule_fragment");
+                if (scheduleFragment != null) {
+                    scheduleFragment.loadSchedulesFromDatabase();
+                }
+
+                // Still send broadcast (as backup)
+                Intent refreshIntent = new Intent("com.example.callepeninsulares.REFRESH_SCHEDULES");
+                getContext().sendBroadcast(refreshIntent);
+
+                dismiss();
             } else {
                 Toast.makeText(getContext(), "Update failed!", Toast.LENGTH_SHORT).show();
+                Log.d("EditScheduleActivity", "Schedule update failed.");
             }
         });
 
@@ -279,7 +322,8 @@ public class EditScheduleActivity extends DialogFragment {
                         if (deleted) {
                             Toast.makeText(getContext(), "Deleted successfully!", Toast.LENGTH_SHORT).show();
                             // Send a broadcast to notify the ScheduleFragment to refresh
-                            requireContext().sendBroadcast(new Intent("com.example.callepeninsulares.REFRESH_SCHEDULES"));
+                            Intent refreshIntent = new Intent("com.example.callepeninsulares.REFRESH_SCHEDULES");
+                            getContext().sendBroadcast(refreshIntent);
                             dismiss(); // Close the dialog on success
                         } else {
                             Toast.makeText(getContext(), "Delete failed!", Toast.LENGTH_SHORT).show();
@@ -331,6 +375,61 @@ public class EditScheduleActivity extends DialogFragment {
             }
         } else if (view instanceof TextView) {
             ((TextView) view).setTextSize(sizeSp);
+        }
+    }
+    private void cancelExistingAlarm(int scheduleId) {
+        Context context = getContext(); // or requireContext() if this is a Fragment
+        if (context == null) return;
+
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(context, AlarmReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(
+                context,
+                scheduleId,
+                intent,
+                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
+        );
+
+        if (alarmManager != null) {
+            alarmManager.cancel(pendingIntent);
+            Log.d("AlarmUpdate", "Cancelled existing alarm for schedule ID " + scheduleId);
+        }
+    }
+
+    private void scheduleAlarm(int scheduleId, String subject, String room, String date, String startTime, int minutesBefore, String meetLink) {
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("d/M/yyyy hh:mm a", Locale.getDefault());
+            Date classDateTime = sdf.parse(date + " " + startTime);
+            if (classDateTime == null) return;
+
+            long triggerTime = classDateTime.getTime() - (minutesBefore * 60 * 1000);
+
+            AlarmManager alarmManager = (AlarmManager) requireContext().getSystemService(Context.ALARM_SERVICE);
+            Intent intent = new Intent(requireContext(), AlarmReceiver.class);
+            intent.putExtra("scheduleId", scheduleId);
+            intent.putExtra("subject", subject);
+            intent.putExtra("room", room);
+            intent.putExtra("startTime", startTime);
+            intent.putExtra("meetLink", meetLink);
+
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(
+                    requireContext(),
+                    scheduleId, // unique per schedule
+                    intent,
+                    PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
+            );
+
+            if (alarmManager != null) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                    alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, triggerTime, pendingIntent);
+                } else {
+                    alarmManager.setExact(AlarmManager.RTC_WAKEUP, triggerTime, pendingIntent);
+                }
+            }
+
+            Log.d("AlarmUpdate", "Rescheduled alarm for schedule ID " + scheduleId + " at " + triggerTime);
+        } catch (Exception e) {
+            Log.e("AlarmUpdate", "Error scheduling alarm: " + e.getMessage());
         }
     }
 }
