@@ -38,13 +38,17 @@ import java.util.Date;
 import java.util.Locale;
 
 public class EditScheduleActivity extends DialogFragment {
-
+    public interface OnScheduleUpdatedListener {
+        void onScheduleUpdated();
+    }
     DatabaseHelper dbHelper;
     int scheduleId;
     int selectedMinutesBefore = 0;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
+
 
         getDialog().getWindow().requestFeature(Window.FEATURE_NO_TITLE);
         getDialog().getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
@@ -294,15 +298,8 @@ public class EditScheduleActivity extends DialogFragment {
                 );
 
                 Toast.makeText(getContext(), "Updated and alarm rescheduled!", Toast.LENGTH_SHORT).show();
-                ScheduleFragment scheduleFragment = (ScheduleFragment) getParentFragmentManager()
-                        .findFragmentByTag("schedule_fragment");
-                if (scheduleFragment != null) {
-                    scheduleFragment.loadSchedulesFromDatabase();
-                }
 
-                // Still send broadcast (as backup)
-                Intent refreshIntent = new Intent("com.example.callepeninsulares.REFRESH_SCHEDULES");
-                getContext().sendBroadcast(refreshIntent);
+                ScheduleFragment.refreshSchedulesStatic();
 
                 dismiss();
             } else {

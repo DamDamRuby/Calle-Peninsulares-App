@@ -31,16 +31,31 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
-public class ScheduleFragment extends Fragment {
+public class ScheduleFragment extends Fragment implements EditScheduleActivity.OnScheduleUpdatedListener {
 
+    private static ScheduleFragment instance;
 
+    public ScheduleFragment() {
+        instance = this; // set the static reference
+    }
 
+    public static void refreshSchedulesStatic() {
+        if (instance != null) {
+            instance.loadSchedulesFromDatabase();
+        }
+    }
     private BroadcastReceiver refreshReceiver;
     private DatabaseHelper dbHelper;
     private ArrayList<Schedule> schedules;
     private ArrayList<String> listItems;
     private ArrayAdapter<String> adapter;
     private ListView listView;
+
+
+    @Override
+    public void onScheduleUpdated() {
+        loadSchedulesFromDatabase();
+    }
 
     @Nullable
     @Override
@@ -87,6 +102,7 @@ public class ScheduleFragment extends Fragment {
             fragment.setArguments(args);
 
 
+            fragment.setTargetFragment(this, 1); // ScheduleFragment will be target
             fragment.show(getParentFragmentManager(), "edit_schedule");
         });
         return view;
