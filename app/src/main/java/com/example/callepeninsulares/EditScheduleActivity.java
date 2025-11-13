@@ -319,8 +319,7 @@ public class EditScheduleActivity extends DialogFragment {
                         if (deleted) {
                             Toast.makeText(getContext(), "Deleted successfully!", Toast.LENGTH_SHORT).show();
                             // Send a broadcast to notify the ScheduleFragment to refresh
-                            Intent refreshIntent = new Intent("com.example.callepeninsulares.REFRESH_SCHEDULES");
-                            getContext().sendBroadcast(refreshIntent);
+                            ScheduleFragment.refreshSchedulesStatic();
                             dismiss(); // Close the dialog on success
                         } else {
                             Toast.makeText(getContext(), "Delete failed!", Toast.LENGTH_SHORT).show();
